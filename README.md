@@ -1,7 +1,7 @@
 # NFT.STORE: WEB3 COPYRIGHT MARKETPLACE
 
 <div align="center">
-  <img src="trangchu.png" alt="Tính năng nổi bật" width="85%">
+  <img src="ảnh/trangchu.png" alt="Tính năng nổi bật" width="85%">
 </div>
 
 ## Tổng quan dự án
@@ -17,13 +17,13 @@ Công nghệ cốt lõi:
 <table align="center" width="100%" style="border-collapse: collapse; border: none;">
   <tr style="border: none;">
     <td align="center" width="33.33%" style="border: none; padding: 10px;">
-      <img src="metamask.jpg" alt="MetaMask" width="100%" style="max-height: 90px; object-fit: contain;">
+      <img src="ảnh/metamask.jpg" alt="MetaMask" width="100%" style="max-height: 90px; object-fit: contain;">
     </td>
     <td align="center" width="33.33%" style="border: none; padding: 10px;">
-      <img src="visualcode.jpg" alt="VS Code" width="100%" style="max-height: 90px; object-fit: contain;">
+      <img src="ảnh/visualcode.jpg" alt="VS Code" width="100%" style="max-height: 90px; object-fit: contain;">
     </td>
     <td align="center" width="33.33%" style="border: none; padding: 10px;">
-      <img src="remixide.jpg" alt="Remix IDE" width="100%" style="max-height: 90px; object-fit: contain;">
+      <img src="ảnh/remixide.jpg" alt="Remix IDE" width="100%" style="max-height: 90px; object-fit: contain;">
     </td>
   </tr>
 </table>
@@ -42,13 +42,13 @@ Công nghệ cốt lõi:
       <h3>Kết nối ví</h3>
       <p>Người dùng tích hợp ví MetaMask, hệ thống tự động nhận diện địa chỉ ví công khai.</p>
       <br>
-      <div align="center"><img src="ketnoi.png" alt="Kết nối ví" width="95%"></div>
+      <div align="center"><img src="ảnh/ketnoi.png" alt="Kết nối ví" width="95%"></div>
     </td>
     <td width="50%" valign="top" style="border: none; padding: 15px; background: #ffffff;">
       <h3>Phát hành (MINT)</h3>
       <p>Tải file lên &rarr; Nhập tên &rarr; Đặt giá bằng đồng ETH &rarr; Ký giao dịch trên MetaMask để đẩy lên Smart Contract.</p>
       <br>
-      <div align="center"><img src="phathanh.png" alt="Phát hành" width="95%"></div>
+      <div align="center"><img src="ảnh/phathanh.png" alt="Phát hành" width="95%"></div>
     </td>
   </tr>
   <tr style="border: none;">
@@ -56,13 +56,13 @@ Công nghệ cốt lõi:
       <h3>Mua bán (BUY)</h3>
       <p>Người mua nhấn "MUA NGAY" tại trang chủ &rarr; MetaMask tự động tính toán phí Gas.</p>
       <br>
-      <div align="center"><img src="mua.png" alt="Mua bán" width="95%"></div>
+      <div align="center"><img src="ảnh/mua.png" alt="Mua bán" width="95%"></div>
     </td>
     <td width="50%" valign="top" style="border: none; padding: 15px; background: #ffffff;">
       <h3>Chuyển quyền sở hữu</h3>
       <p>Hệ thống cập nhật owner mới, sản phẩm tự động gỡ khỏi sàn và chuyển vào danh mục "Đã bán" của người mua.</p>
       <br>
-      <div align="center"><img src="banlai.png" alt="Chuyển quyền sở hữu" width="95%"></div>
+      <div align="center"><img src="ảnh/banlai.png" alt="Chuyển quyền sở hữu" width="95%"></div>
     </td>
   </tr>
 </table>
