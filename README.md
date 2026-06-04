@@ -1,7 +1,7 @@
 # NFT.STORE: WEB3 COPYRIGHT MARKETPLACE
 
 <div align="center">
-  <img src="ảnh/trangchu.png" alt="Tính năng nổi bật" width="85%">
+  <img src="porter.png" alt="Tính năng nổi bật" width="85%">
 </div>
 
 ## Tổng quan dự án
