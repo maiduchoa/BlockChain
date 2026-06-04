@@ -1,5 +1,3 @@
-# NFT.STORE: WEB3 COPYRIGHT MARKETPLACE
-
 <div align="center">
   <img src="porter.png" alt="Tính năng nổi bật" width="85%">
 </div>
