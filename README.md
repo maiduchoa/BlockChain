@@ -12,7 +12,7 @@
                 <li data-html-import-id="html-import-10" data-template-id="li-7" class="canva-text" style="color: rgb(0, 0, 0);">Giao diện (Front-end): HTML5, Tailwind CSS (Thiết kế High-End Minimalist).</li>
                 <li data-html-import-id="html-import-11" data-template-id="li-8" class="canva-text" style="color: rgb(0, 0, 0);">Kết nối Blockchain: Thư viện ethers.js &amp; Ví điện tử MetaMask.</li>
             </ul>
-            <img data-html-import-id="html-import-12" data-template-id="img-9" class="canva-image" src="https://via.placeholder.com/800x450" alt="Tổng quan dự án">
+            <img data-html-import-id="html-import-12" data-template-id="img-9" class="canva-image" src="metamask.jpg" alt="Tổng quan dự án">
         </div>
     </div>
     <div class="features" data-html-import-id="html-import-13">
