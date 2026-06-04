@@ -1,0 +1,64 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+// Sử dụng thư viện chuẩn của OpenZeppelin để đảm bảo an toàn
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+
+contract MusicCopyrightMarket is ERC721URIStorage {
+    uint256 public nextTokenId;
+    uint256 public royaltyPercentage = 10; // 10% phí tác quyền (Royalty)
+
+    struct Artwork {
+        address payable creator; // Nghệ sĩ gốc
+        uint256 price;           // Giá bán
+        bool isForSale;          // Trạng thái rao bán
+    }
+
+    mapping(uint256 => Artwork) public artworks;
+
+    constructor() ERC721("MusicCopyright", "MCR") {}
+
+    // 1. Chức năng Đăng tải (Mint) tác phẩm
+    function mintArtwork(string memory tokenURI, uint256 price) public {
+        uint256 tokenId = nextTokenId;
+        _safeMint(msg.sender, tokenId);
+        _setTokenURI(tokenId, tokenURI);
+        
+        artworks[tokenId] = Artwork(payable(msg.sender), price, true);
+        nextTokenId++;
+    }
+
+    // 2. Chức năng Mua và tự động chia tiền Royalty
+    function buyArtwork(uint256 tokenId) public payable {
+        Artwork storage art = artworks[tokenId];
+        require(art.isForSale, "Tac pham khong rao ban");
+        require(msg.value >= art.price, "Khong du tien");
+
+        address payable seller = payable(ownerOf(tokenId));
+        uint256 royaltyAmount = (msg.value * royaltyPercentage) / 100;
+        uint256 sellerAmount = msg.value - royaltyAmount;
+
+        // Tiền bản quyền tự động gửi về ví Nghệ sĩ gốc (Creator)
+        art.creator.transfer(royaltyAmount);
+        
+        // Tiền còn lại gửi cho người bán hiện tại
+        seller.transfer(sellerAmount);
+
+        // Chuyển quyền sở hữu Token (Bản quyền) cho người mua
+        _transfer(seller, msg.sender, tokenId);
+        art.isForSale = false; 
+        
+    }
+    // Thêm hàm này vào trong Contract MusicCopyrightMarket
+function cancelSale(uint256 tokenId) public {
+    require(ownerOf(tokenId) == msg.sender, "Ban khong phai chu so huu");
+    artworks[tokenId].isForSale = false;
+}
+
+// Thêm hàm để nghệ sĩ có thể rao bán lại nếu muốn
+function listForSale(uint256 tokenId, uint256 newPrice) public {
+    require(ownerOf(tokenId) == msg.sender, "Ban khong phai chu so huu");
+    artworks[tokenId].price = newPrice;
+    artworks[tokenId].isForSale = true;
+}
+}

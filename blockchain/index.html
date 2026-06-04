@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Music & Art Premium</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #020203; color: white; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        .glass { background: rgba(20, 22, 28, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .nft-card { transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: #0f1115; border: 1px solid #1f2229; border-radius: 24px; overflow: hidden; }
+        .nft-card:hover { transform: translateY(-8px); border-color: #6366f1; background: #161920; }
+        .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); transition: 0.3s; }
+        .btn-primary:hover { box-shadow: 0 0 25px rgba(99, 102, 241, 0.4); transform: scale(1.02); }
+        .category-title { position: relative; display: inline-block; padding-bottom: 8px; margin-bottom: 24px; }
+        .category-title::after { content: ''; position: absolute; left: 0; bottom: 0; width: 40px; height: 4px; background: #6366f1; border-radius: 2px; }
+        input, select { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: white !important; outline: none !important; }
+        input:focus, select:focus { border-color: #6366f1 !important; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 px-8 py-4 flex justify-between items-center bg-black/60 backdrop-blur-xl border-b border-white/5">
+        <h1 onclick="window.location.reload()" class="text-2xl font-black cursor-pointer tracking-tighter italic">NFT<span class="text-indigo-500">.</span>STUDIO</h1>
+        
+        <div class="flex items-center gap-4">
+            <input type="text" id="searchBar" oninput="renderNFTs()" placeholder="Tìm kiếm..." class="hidden md:block rounded-full px-5 py-2 text-sm w-64">
+            <button id="connectBtn" onclick="connect()" class="px-5 py-2.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-xl text-xs font-bold hover:bg-indigo-500/20 transition">Kết nối ví</button>
+            <button onclick="switchTab('upload')" class="p-2.5 bg-indigo-500 rounded-xl hover:bg-indigo-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+            </button>
+            <button onclick="switchTab('myAssets')" class="p-2.5 glass rounded-xl hover:bg-white/5 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+            </button>
+            <button onclick="switchTab('market')" class="p-2.5 glass rounded-xl hover:bg-white/5 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-8 pt-28 pb-20">
+        
+        <!-- Market Section -->
+        <div id="displaySection">
+            <div id="categoryContainer">
+                <!-- NFT theo phân loại sẽ được render vào đây -->
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div id="uploadSection" class="hidden max-w-xl mx-auto glass p-10 rounded-[40px] mt-10">
+            <h2 class="text-3xl font-black mb-6 text-center">Phát hành tác phẩm</h2>
+            <div class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-gray-500 ml-2">PHÂN LOẠI</label>
+                    <select id="categoryInput" class="w-full rounded-2xl px-5 py-4 cursor-pointer appearance-none">
+                        <option value="Nhạc Pop">Nhạc Pop</option>
+                        <option value="Nhạc Nhẹ">Nhạc Nhẹ</option>
+                        <option value="Rock">Rock</option>
+                        <option value="Rap / Hip-hop">Rap / Hip-hop</option>
+                        <option value="EDM">EDM</option>
+                        <option value="Art / Graphics">Art / Graphics</option>
+                    </select>
+                </div>
+                <input type="text" id="urlInput" placeholder="URL Hình ảnh/Ảnh bìa" class="w-full rounded-2xl px-5 py-4">
+                <input type="text" id="nameInput" placeholder="Tên tác phẩm" class="w-full rounded-2xl px-5 py-4">
+                <input type="number" id="priceInput" placeholder="Giá bán (ETH)" class="w-full rounded-2xl px-5 py-4">
+                <button onclick="handleUpload()" class="w-full btn-primary py-5 rounded-2xl font-bold uppercase tracking-widest mt-4">Xác nhận niêm yết</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-10 right-10 glass px-8 py-4 rounded-2xl text-sm font-bold hidden z-50 text-indigo-400 border-indigo-500/50"></div>
+
+    <script>
+        const contractAddress = "0x5C6207a144f251948197a9913E8d6B4544EBd4Fc";
+        const abi = [
+            "function mintArtwork(string tokenURI, uint256 price)",
+            "function buyArtwork(uint256 tokenId) payable",
+            "function listForSale(uint256 tokenId, uint256 newPrice)",
+            "function ownerOf(uint256 tokenId) view returns (address)",
+            "function artworks(uint256) view returns (address creator, uint256 price, bool isForSale)",
+            "function nextTokenId() view returns (uint256)",
+            "function tokenURI(uint256 tokenId) view returns (string)"
+        ];
+
+        let signer, contract, allNFTs = [], currentView = 'market', userWallet = "";
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 5000);
+        }
+
+        async function connect() {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                signer = provider.getSigner();
+                contract = new ethers.Contract(contractAddress, abi, signer);
+                userWallet = (await signer.getAddress()).toLowerCase();
+                document.getElementById('connectBtn').innerText = userWallet.substring(0,8) + "...";
+                loadData();
+            }
+        }
+
+        async function loadData() {
+            if(!contract) return;
+            try {
+                const total = (await contract.nextTokenId()).toNumber();
+                allNFTs = [];
+                for (let i = 0; i < total; i++) {
+                    const art = await contract.artworks(i);
+                    const owner = (await contract.ownerOf(i)).toLowerCase();
+                    const rawUri = await contract.tokenURI(i);
+                    let meta;
+                    try {
+                        meta = JSON.parse(rawUri);
+                    } catch(e) {
+                        meta = { name: "NFT #"+i, image: rawUri, category: "Chưa phân loại" };
+                    }
+                    allNFTs.push({ id: i, owner, price: art.price, isForSale: art.isForSale, ...meta });
+                }
+                renderNFTs();
+            } catch(e) { console.error(e); }
+        }
+
+        function renderNFTs() {
+            const container = document.getElementById('categoryContainer');
+            container.innerHTML = "";
+            const search = document.getElementById('searchBar').value.toLowerCase();
+
+            // Lọc danh sách theo View
+            let filtered = allNFTs.filter(nft => {
+                const matchesSearch = nft.name.toLowerCase().includes(search);
+                if (currentView === 'market') return nft.isForSale && matchesSearch;
+                return nft.owner === userWallet && matchesSearch;
+            });
+
+            // Nhóm theo Category
+            const categories = [...new Set(filtered.map(nft => nft.category || "Chưa phân loại"))];
+
+            if (categories.length === 0) {
+                container.innerHTML = `<div class="text-center py-20 text-gray-500 font-bold">Không tìm thấy tác phẩm nào.</div>`;
+                return;
+            }
+
+            categories.forEach(cat => {
+                const catNFTs = filtered.filter(n => (n.category || "Chưa phân loại") === cat);
+                
+                const section = document.createElement('div');
+                section.className = "mb-16";
+                section.innerHTML = `
+                    <h3 class="category-title text-2xl font-black tracking-tight">${cat}</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        ${catNFTs.map(nft => `
+                            <div class="nft-card p-4">
+                                <div class="h-52 w-full rounded-2xl overflow-hidden mb-4 bg-zinc-900">
+                                    <img src="${nft.image}" class="w-full h-full object-cover">
+                                </div>
+                                <h4 class="font-bold truncate text-lg mb-1">${nft.name}</h4>
+                                <div class="flex justify-between items-end">
+                                    <p class="text-indigo-400 font-black text-xl">${ethers.utils.formatEther(nft.price)} ETH</p>
+                                    <span class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">${nft.category || 'NFT'}</span>
+                                </div>
+                                <div class="mt-4">
+                                    ${currentView === 'market' ? 
+                                        `<button onclick="buyItem(${nft.id}, '${ethers.utils.formatEther(nft.price)}')" class="w-full btn-primary py-3 rounded-xl font-bold text-sm">MUA NGAY</button>` :
+                                        (nft.isForSale ? 
+                                            `<div class="text-center py-3 bg-white/5 rounded-xl text-gray-500 text-xs font-bold border border-white/10">ĐANG RAO BÁN</div>` :
+                                            `<div class="flex gap-2">
+                                                <input type="number" id="rePrice-${nft.id}" placeholder="Giá" class="w-1/2 rounded-lg px-2 text-xs bg-transparent">
+                                                <button onclick="resellItem(${nft.id})" class="w-1/2 bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold text-[10px] transition">BÁN LẠI</button>
+                                            </div>`
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+        }
+
+        async function handleUpload() {
+            const url = document.getElementById('urlInput').value;
+            const name = document.getElementById('nameInput').value;
+            const price = document.getElementById('priceInput').value;
+            const category = document.getElementById('categoryInput').value;
+            
+            if(!url || !name || !price) return alert("Vui lòng nhập đủ thông tin!");
+
+            try {
+                showToast("⏳ Đang khởi tạo giao dịch...");
+                const meta = JSON.stringify({ name, image: url, category: category });
+                const tx = await contract.mintArtwork(meta, ethers.utils.parseEther(price));
+                await tx.wait();
+                showToast("🎉 Phát hành thành công!");
+                loadData();
+                switchTab('market');
+            } catch (e) { showToast("❌ Lỗi giao dịch"); }
+        }
+
+        async function resellItem(id) {
+            const p = document.getElementById(`rePrice-${id}`).value;
+            if(!p) return alert("Nhập giá!");
+            try {
+                showToast("⏳ Đang niêm yết lại...");
+                const tx = await contract.listForSale(id, ethers.utils.parseEther(p));
+                await tx.wait();
+                showToast("🚀 Đã treo bán!");
+                loadData();
+            } catch(e) { showToast("❌ Lỗi niêm yết"); }
+        }
+
+        async function buyItem(id, price) {
+            try {
+                showToast("⏳ Chờ xác nhận từ ví...");
+                const tx = await contract.buyArtwork(id, { value: ethers.utils.parseEther(price) });
+                await tx.wait();
+                showToast("🚀 Mua thành công!");
+                loadData();
+            } catch(e) { showToast("❌ Lỗi mua"); }
+        }
+
+        function switchTab(tab) {
+            currentView = tab;
+            document.getElementById('displaySection').classList.toggle('hidden', tab === 'upload');
+            document.getElementById('uploadSection').classList.toggle('hidden', tab !== 'upload');
+            renderNFTs();
+        }
+
+        window.onload = () => { if(window.ethereum) connect(); };
+    </script>
+</body>
+</html>
